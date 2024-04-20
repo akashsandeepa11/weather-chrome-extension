@@ -7,5 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Akash Sandeepa",
-  "license": "Unlicense"
+  "license": "Unlicense",
+  "devDependencies": {
+    "react": "^18.2.0",
+    "typescript": "^5.4.5"
+  }
 }
