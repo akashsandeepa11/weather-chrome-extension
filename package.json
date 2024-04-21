@@ -4,12 +4,17 @@
   "description": "Chrome Extension in React!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack --watch --progress --config webpack.config.js"
   },
   "author": "Akash Sandeepa",
   "license": "Unlicense",
   "devDependencies": {
+    "@types/eslint": "^8.56.10",
+    "eslint": "^9.1.0",
     "react": "^18.2.0",
-    "typescript": "^5.4.5"
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   }
 }
