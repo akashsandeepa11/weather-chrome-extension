@@ -1,0 +1,1 @@
+chrome.runtime.sendMessage("From Cotent Script",(e=>{console.log(e)}));
