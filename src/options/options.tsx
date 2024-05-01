@@ -2,10 +2,17 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "./options.css";
 
-const test = <p>Hello world</p>;
+const App: React.FC<{}> = () => {
+  return (
+    <div>
+      <h1>Akash sandeepa</h1>
+    </div>
+  );
+};
 
-const root = document.createElement("div");
-document.body.appendChild(root);
+const rootElement = document.createElement("div");
+rootElement.id = "root";
+document.body.appendChild(rootElement);
 
-const rootElement = createRoot(root);
-rootElement.render(test);
+const root = createRoot(rootElement);
+root.render(<App />);

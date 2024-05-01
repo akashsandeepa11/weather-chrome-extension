@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import "./popup.css";
+import { fetchOpenWeatherData } from "../utils/api";
+import WeatheCard from "./WeatherCard";
+import * as dotenv from "dotenv";
 
-const test = <p>Hello world</p>;
+const App: React.FC<{}> = () => {
+  return (
+    <div>
+      <WeatheCard city={"Colombo"} />
+    </div>
+  );
+};
 
-const root = document.createElement("div");
-document.body.appendChild(root);
+dotenv.config();
+const rootElement = document.createElement("div");
+rootElement.id = "root";
+document.body.appendChild(rootElement);
 
-const rootElement = createRoot(root);
-rootElement.render(test);
+const root = createRoot(rootElement);
+root.render(<App />);
