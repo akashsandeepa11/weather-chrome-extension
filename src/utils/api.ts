@@ -22,6 +22,8 @@ export interface OpenWeatherData {
   };
 }
 
+export type OpenWeatherTempScale = "matric" | "imperial";
+
 export async function fetchOpenWeatherData(
   city: String
 ): Promise<OpenWeatherData> {

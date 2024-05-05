@@ -2,24 +2,35 @@ import React, { useEffect, useState } from "react";
 import { OpenWeatherData, fetchOpenWeatherData } from "../../utils/api";
 import "./WeatherCard.css";
 import Card from "@mui/material/Card";
-import { CardContent, Typography } from "@mui/material";
+import { Button, CardActions, CardContent, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 
 type WeatherCardState = "loading" | "error" | "ready";
 
-const WeatherCardContainer: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const WeatherCardContainer: React.FC<{
+  children: React.ReactNode;
+  onDelete?: () => void;
+}> = ({ children, onDelete }) => {
   return (
     <Box my={1}>
       <Card>
         <CardContent>{children}</CardContent>
+        <CardActions>
+          {onDelete && (
+            <Button onClick={onDelete} color="error" size="small">
+              Delete
+            </Button>
+          )}
+        </CardActions>
       </Card>
     </Box>
   );
 };
 
-const WeatheCard: React.FC<{ city: String }> = ({ city }) => {
+const WeatherCard: React.FC<{ city: String; onDelete?: () => void }> = ({
+  city,
+  onDelete,
+}) => {
   const [weatherData, setWeatherData] = useState<OpenWeatherData | null>(null);
   const [cardState, setCardState] = useState<WeatherCardState>("loading");
 
@@ -37,7 +48,7 @@ const WeatheCard: React.FC<{ city: String }> = ({ city }) => {
 
   if (cardState == "loading" || cardState == "error") {
     return (
-      <WeatherCardContainer>
+      <WeatherCardContainer onDelete={onDelete}>
         <Typography variant="body1">
           {cardState == "loading"
             ? "Loading..."
@@ -48,7 +59,7 @@ const WeatheCard: React.FC<{ city: String }> = ({ city }) => {
   }
 
   return (
-    <WeatherCardContainer>
+    <WeatherCardContainer onDelete={onDelete}>
       <Typography variant="h5">{weatherData.name}</Typography>
       <Typography variant="body1">
         {Math.round(weatherData.main.temp)}
@@ -60,4 +71,4 @@ const WeatheCard: React.FC<{ city: String }> = ({ city }) => {
   );
 };
 
-export default WeatheCard;
+export default WeatherCard;

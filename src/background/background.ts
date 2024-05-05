@@ -1,3 +1,8 @@
-chrome.runtime.onMessage.addListener((msg, sender, sendRes) => {
-  console.log(msg), console.log(sender), sendRes("from Background script");
+import { setStoredCities, setStoredOptions } from "../utils/storage";
+
+chrome.runtime.onInstalled.addListener(() => {
+  setStoredCities([]);
+  setStoredOptions({
+    tempScale: "matric",
+  });
 });
