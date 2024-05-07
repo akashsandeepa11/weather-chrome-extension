@@ -11,7 +11,9 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getStoredCities: () => (/* binding */ getStoredCities),
-/* harmony export */   setStoredCities: () => (/* binding */ setStoredCities)
+/* harmony export */   getStoredOptions: () => (/* binding */ getStoredOptions),
+/* harmony export */   setStoredCities: () => (/* binding */ setStoredCities),
+/* harmony export */   setStoredOptions: () => (/* binding */ setStoredOptions)
 /* harmony export */ });
 function setStoredCities(cities) {
     const vals = {
@@ -26,6 +28,22 @@ function getStoredCities() {
     return new Promise((resolve) => {
         chrome.storage.local.get(keys, (res) => {
             resolve(res.cities);
+        });
+    });
+}
+function setStoredOptions(options) {
+    const vals = {
+        options,
+    };
+    return new Promise((resolve) => {
+        chrome.storage.local.set(vals, () => resolve());
+    });
+}
+function getStoredOptions() {
+    const keys = ["options"];
+    return new Promise((resolve) => {
+        chrome.storage.local.get(keys, (res) => {
+            resolve(res.options);
         });
     });
 }
@@ -100,6 +118,10 @@ __webpack_require__.r(__webpack_exports__);
 
 chrome.runtime.onInstalled.addListener(() => {
     (0,_utils_storage__WEBPACK_IMPORTED_MODULE_0__.setStoredCities)([]);
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_0__.setStoredOptions)({
+        homeCity: "Monaragala",
+        tempScale: "metric",
+    });
 });
 
 })();

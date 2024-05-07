@@ -5,6 +5,7 @@ export interface LocalStorage {
   options?: LocalStorageOptions;
 }
 export interface LocalStorageOptions {
+  homeCity: String;
   tempScale: OpenWeatherTempScale;
 }
 

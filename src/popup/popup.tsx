@@ -19,7 +19,6 @@ import {
   setStoredCities,
   setStoredOptions,
 } from "../utils/storage";
-import { OpenWeatherTempScale } from "../utils/api";
 
 const App: React.FC<{}> = () => {
   const [cities, setCities] = useState<String[]>([]);
@@ -61,22 +60,19 @@ const App: React.FC<{}> = () => {
   }
 
   function handleTempScaleChange() {
-    const updatedTempScale: OpenWeatherTempScale =
-      options.tempScale === "imperial" ? "matric" : "imperial";
+    const updatedTempScale: LocalStorageOptions = {
+      ...options,
+      tempScale: options.tempScale === "imperial" ? "metric" : "imperial",
+    };
 
-    setStoredOptions({ tempScale: updatedTempScale }).then(() => {
-      setOptions({ tempScale: updatedTempScale });
+    setStoredOptions(updatedTempScale).then(() => {
+      setOptions(updatedTempScale);
     });
   }
 
   return (
     <Box mx="8px" my="16px">
-      <Grid
-        container
-        direction="column"
-        justifyContent="space-between"
-        alignItems="center"
-      >
+      <Grid container direction="row" spacing={2} alignItems="center">
         <Grid item>
           <Paper>
             <Box px="15px" py="5px">
@@ -113,17 +109,20 @@ const App: React.FC<{}> = () => {
         <Grid item>
           <Paper>
             <Grid item>
-              <IconButton>
-                {options.tempScale === "matric" ? "\u2103" : "\u2109"}
+              <IconButton type="button" onClick={handleTempScaleChange}>
+                {options.tempScale === "imperial" ? "\u2103" : "\u2109"}
               </IconButton>
             </Grid>
           </Paper>
         </Grid>
       </Grid>
-
+      {options.homeCity != "" ? (
+        <WeatherCard city={options.homeCity} tempScale={options.tempScale} />
+      ) : null}
       {cities.map((cityName, index) => (
         <WeatherCard
           city={cityName}
+          tempScale={options.tempScale}
           key={index}
           onDelete={() => handleDeleteCityName(index)}
         />
