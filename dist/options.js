@@ -101,7 +101,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Grid/Grid.js");
 /* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Typography/Typography.js");
 /* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/TextField/TextField.js");
-/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Button/Button.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Switch/Switch.js");
+/* harmony import */ var _mui_material__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @mui/material */ "./node_modules/@mui/material/Button/Button.js");
 /* harmony import */ var _utils_storage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/storage */ "./src/utils/storage.ts");
 
 
@@ -109,13 +110,27 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const App = () => {
-    const [homeCity, setHomeCity] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
-    const cityRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    const [options, setOptions] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+    const [saveState, setSaveState] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("ready");
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         (0,_utils_storage__WEBPACK_IMPORTED_MODULE_3__.getStoredOptions)().then((res) => {
-            setHomeCity(res.homeCity);
+            setOptions(res);
+            setSaveState("ready");
         });
     }, []);
+    function handleSaveHomeCity() {
+        setSaveState("saving");
+        (0,_utils_storage__WEBPACK_IMPORTED_MODULE_3__.setStoredOptions)(options).then(() => setTimeout(() => {
+            setSaveState("ready");
+        }, 1000));
+    }
+    function handleSwichChange(isToggleActive) {
+        setOptions(Object.assign(Object.assign({}, options), { hasOverlayActive: isToggleActive }));
+    }
+    if (!options) {
+        return null;
+    }
+    const isFormStateSaving = saveState === "saving";
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_4__["default"], { mx: 10, my: 2 },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_5__["default"], null,
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_6__["default"], null,
@@ -124,9 +139,12 @@ const App = () => {
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], { variant: "h4" }, "Weather Extension Options")),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], { item: true },
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], { variant: "body1" }, "Home City Name:"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], { inputRef: cityRef, placeholder: "Enter a Home city", variant: "standard", value: homeCity })),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_9__["default"], { placeholder: "Enter a Home city", variant: "standard", value: options.homeCity, onChange: (event) => setOptions(Object.assign(Object.assign({}, options), { homeCity: event.target.value })) })),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], { item: true },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], { variant: "contained", color: "primary" }, "Save")))))));
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_8__["default"], { variant: "body1" }, "Auto toggle overlay on webpage load:"),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_10__["default"], { checked: options.hasOverlayActive, onChange: (event, checked) => handleSwichChange(checked), disabled: isFormStateSaving })),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_7__["default"], { item: true },
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mui_material__WEBPACK_IMPORTED_MODULE_11__["default"], { disabled: isFormStateSaving, onClick: handleSaveHomeCity, variant: "contained", color: "primary" }, isFormStateSaving ? "Saving..." : "save")))))));
 };
 const rootElement = document.createElement("div");
 rootElement.id = "root";
@@ -375,7 +393,7 @@ function getStoredOptions() {
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_mui_material_Box_Box_js-node_modules_mui_material_Button_Button_js-node_-fd09b9","vendors-node_modules_mui_material_TextField_TextField_js"], () => (__webpack_require__("./src/options/options.tsx")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_mui_material_Box_Box_js-node_modules_mui_material_Button_Button_js-node_-53958f","vendors-node_modules_mui_material_Switch_Switch_js-node_modules_mui_material_TextField_TextField_js"], () => (__webpack_require__("./src/options/options.tsx")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

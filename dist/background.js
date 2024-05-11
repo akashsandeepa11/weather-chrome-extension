@@ -2,6 +2,56 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./env.tsx":
+/*!*****************!*\
+  !*** ./env.tsx ***!
+  \*****************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   OPEN_WEATHER_API_KEY: () => (/* binding */ OPEN_WEATHER_API_KEY)
+/* harmony export */ });
+const OPEN_WEATHER_API_KEY = "4514495f3fd9cadbf2e0b838e1f493a8";
+
+
+/***/ }),
+
+/***/ "./src/utils/api.ts":
+/*!**************************!*\
+  !*** ./src/utils/api.ts ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fetchOpenWeatherData: () => (/* binding */ fetchOpenWeatherData)
+/* harmony export */ });
+/* harmony import */ var _env__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../env */ "./env.tsx");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+function fetchOpenWeatherData(city, tempScale) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const res = yield fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${tempScale}&appid=${_env__WEBPACK_IMPORTED_MODULE_0__.OPEN_WEATHER_API_KEY}`);
+        if (!res.ok) {
+            throw new Error("City not found");
+        }
+        const data = yield res.json();
+        return data;
+    });
+}
+
+
+/***/ }),
+
 /***/ "./src/utils/storage.ts":
 /*!******************************!*\
   !*** ./src/utils/storage.ts ***!
@@ -114,13 +164,41 @@ var __webpack_exports__ = {};
   !*** ./src/background/background.ts ***!
   \**************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils_storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/storage */ "./src/utils/storage.ts");
+/* harmony import */ var _utils_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/api */ "./src/utils/api.ts");
+/* harmony import */ var _utils_storage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/storage */ "./src/utils/storage.ts");
+
 
 chrome.runtime.onInstalled.addListener(() => {
-    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_0__.setStoredCities)([]);
-    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_0__.setStoredOptions)({
-        homeCity: "Monaragala",
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_1__.setStoredCities)([]);
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_1__.setStoredOptions)({
+        hasOverlayActive: false,
+        homeCity: "",
         tempScale: "metric",
+    });
+    chrome.contextMenus.create({
+        contexts: ["selection"],
+        title: "Add city to weather extension",
+        id: "weatherExtension",
+    });
+    chrome.alarms.create({
+        periodInMinutes: 1 / 60,
+    });
+});
+chrome.alarms.onAlarm.addListener((alarm) => {
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_1__.getStoredOptions)().then((options) => {
+        if (options.homeCity === "") {
+            return;
+        }
+        (0,_utils_api__WEBPACK_IMPORTED_MODULE_0__.fetchOpenWeatherData)(options.homeCity, options.tempScale).then((res) => {
+            chrome.action.setBadgeText({
+                text: `${Math.round(res.main.temp)}${options.tempScale === "imperial" ? "\u2109" : "\u2103"}`,
+            });
+        });
+    });
+});
+chrome.contextMenus.onClicked.addListener((event) => {
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_1__.getStoredCities)().then((cities) => {
+        (0,_utils_storage__WEBPACK_IMPORTED_MODULE_1__.setStoredCities)([...cities, event.selectionText]);
     });
 });
 

@@ -1,16 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./popup.css";
-import WeatherCard from "./WeatherCard";
-import {
-  Box,
-  Grid,
-  IconButton,
-  InputBase,
-  SvgIcon,
-  Typography,
-  useAutocomplete,
-} from "@mui/material";
+import WeatherCard from "../components/WeatherCard";
+import { Box, Grid, IconButton, InputBase, SvgIcon } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import {
   LocalStorageOptions,
@@ -19,6 +11,8 @@ import {
   setStoredCities,
   setStoredOptions,
 } from "../utils/storage";
+import PictureInPictureIcon from "@mui/icons-material/PictureInPicture";
+import { Messages } from "../utils/messages";
 
 const App: React.FC<{}> = () => {
   const [cities, setCities] = useState<String[]>([]);
@@ -55,8 +49,12 @@ const App: React.FC<{}> = () => {
     setStoredCities(updatedCities).then(() => setCities(updatedCities));
   }
 
-  if (!options) {
-    return null;
+  function handleOverlayButtonClick() {
+    chrome.tabs.query({ active: true }, (tabs) => {
+      if (tabs.length > 0) {
+        chrome.tabs.sendMessage(tabs[0].id, Messages.TOGGLE_OVERLAY);
+      }
+    });
   }
 
   function handleTempScaleChange() {
@@ -70,12 +68,16 @@ const App: React.FC<{}> = () => {
     });
   }
 
+  if (!options) {
+    return null;
+  }
+
   return (
     <Box mx="8px" my="16px">
-      <Grid container direction="row" spacing={2} alignItems="center">
+      <Grid container direction="row" spacing={1.5} alignItems="center">
         <Grid item>
           <Paper>
-            <Box px="15px" py="5px">
+            <Box px="10px" py="5px">
               <InputBase
                 placeholder="Add city Name"
                 inputRef={cityRef}
@@ -111,6 +113,15 @@ const App: React.FC<{}> = () => {
             <Grid item>
               <IconButton type="button" onClick={handleTempScaleChange}>
                 {options.tempScale === "imperial" ? "\u2103" : "\u2109"}
+              </IconButton>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item>
+          <Paper>
+            <Grid item>
+              <IconButton type="button" onClick={handleOverlayButtonClick}>
+                <PictureInPictureIcon />
               </IconButton>
             </Grid>
           </Paper>

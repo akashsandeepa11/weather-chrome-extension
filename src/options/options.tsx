@@ -7,20 +7,50 @@ import {
   Card,
   CardContent,
   Grid,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
-import { getStoredOptions } from "../utils/storage";
+import {
+  LocalStorageOptions,
+  getStoredOptions,
+  setStoredOptions,
+} from "../utils/storage";
+
+type FormState = "ready" | "saving";
 
 const App: React.FC<{}> = () => {
-  const [homeCity, setHomeCity] = useState<String>("");
-  const cityRef = useRef<String>();
+  const [options, setOptions] = useState<LocalStorageOptions | null>(null);
+  const [saveState, setSaveState] = useState<FormState>("ready");
 
   useEffect(() => {
     getStoredOptions().then((res) => {
-      setHomeCity(res.homeCity);
+      setOptions(res);
+      setSaveState("ready");
     });
   }, []);
+
+  function handleSaveHomeCity() {
+    setSaveState("saving");
+    setStoredOptions(options).then(() =>
+      setTimeout(() => {
+        setSaveState("ready");
+      }, 1000)
+    );
+  }
+
+  function handleSwichChange(isToggleActive: boolean) {
+    setOptions({
+      ...options,
+      hasOverlayActive: isToggleActive,
+    });
+  }
+
+  if (!options) {
+    return null;
+  }
+
+  const isFormStateSaving = saveState === "saving";
 
   return (
     <Box mx={10} my={2}>
@@ -33,15 +63,32 @@ const App: React.FC<{}> = () => {
             <Grid item>
               <Typography variant="body1">Home City Name:</Typography>
               <TextField
-                inputRef={cityRef}
                 placeholder="Enter a Home city"
                 variant="standard"
-                value={homeCity}
+                value={options.homeCity}
+                onChange={(event) =>
+                  setOptions({ ...options, homeCity: event.target.value })
+                }
               />
             </Grid>
             <Grid item>
-              <Button variant="contained" color="primary">
-                Save
+              <Typography variant="body1">
+                Auto toggle overlay on webpage load:
+              </Typography>
+              <Switch
+                checked={options.hasOverlayActive}
+                onChange={(event, checked) => handleSwichChange(checked)}
+                disabled={isFormStateSaving}
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                disabled={isFormStateSaving}
+                onClick={handleSaveHomeCity}
+                variant="contained"
+                color="primary"
+              >
+                {isFormStateSaving ? "Saving..." : "save"}
               </Button>
             </Grid>
           </Grid>

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { OpenWeatherData, fetchOpenWeatherData } from "../../utils/api";
+import {
+  OpenWeatherData,
+  OpenWeatherTempScale,
+  fetchOpenWeatherData,
+} from "../../utils/api";
 import "./WeatherCard.css";
 import Card from "@mui/material/Card";
 import { Button, CardActions, CardContent, Typography } from "@mui/material";
@@ -29,7 +33,7 @@ const WeatherCardContainer: React.FC<{
 
 const WeatherCard: React.FC<{
   city: String;
-  tempScale;
+  tempScale: OpenWeatherTempScale;
   onDelete?: () => void;
 }> = ({ city, tempScale, onDelete }) => {
   const [weatherData, setWeatherData] = useState<OpenWeatherData | null>(null);
